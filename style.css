@@ -1,0 +1,333 @@
+/* ---------- 页面基础设置 ---------- */
+
+body {
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+} JS:const planks = document.querySelectorAll('.plank');
+let currentIndex = 0;
+
+function revealNextPlank() {
+  if (currentIndex >= planks.length) return;
+  const plank = planks[currentIndex];
+
+  // 先把容器本身显示出来（触发 CSS transition）
+  plank.style.opacity = '1';
+
+  if (plank.classList.contains('p9')) {
+    // —— 唯一的“颗粒爆散”逻辑，不用改 —— 
+    const text = plank.textContent.trim();
+    plank.innerHTML = text.split('').map(c =>
+      <span class="char">${c}</span>
+    ).join('');
+    plank.querySelectorAll('.char').forEach(span => {
+      const x = (Math.random() - 0.5) * 200;
+      const y = (Math.random() - 0.5) * 200;
+      span.style.transform = translate(${x}px,${y}px);
+      span.style.opacity = '0';
+      span.style.filter = 'blur(4px)';
+    });
+    requestAnimationFrame(() => {
+      plank.querySelectorAll('.char').forEach(span => {
+        span.style.transition = 'transform 1s ease-out,opacity 1s ease-out,filter 1s ease-out';
+        span.style.transform = 'translate(0,0)';
+        span.style.opacity = '1';
+        span.style.filter = 'blur(0)';
+      });
+    });
+
+  } else if (
+     plank.classList.contains('p1') ||
+     plank.classList.contains('p2') ||
+     plank.classList.contains('p3') ||
+     plank.classList.contains('p5') ||
+     plank.classList.contains('p6')
+  ) {
+    // 这几段“慢慢淡入”，上面已经在 CSS 中加长了 transition
+    // 只需要设置 opacity 即可
+    // （如果你想再加 scale 效果，可以解开下一行）
+    // plank.style.transform = 'scale(0.95)';
+    // requestAnimationFrame(() => plank.style.transform = 'scale(1)');
+    // 这里只需 opacity
+  } else {
+    // 其它段落：按你原来的那样直接淡入
+  }
+
+  currentIndex++;
+}
+
+// 点击或自动启动
+document.body.addEventListener('click', revealNextPlank);
+window.addEventListener('DOMContentLoaded', revealNextPlank);
+
+@font-face {
+  font-family: 'G2 Erika';
+  src: url('./assets/fonts/G2Erika-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'cormorant garamond';
+src:url('https://github.com/Lupinzi/Cormorant-Garamond/raw/refs/heads/main/cormorant-garamond-cyrillic-300-italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+#poem-container {
+  position: relative;
+  width: 794px; /* A4 宽度 */
+  height: 1123px;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+
+/* ---------- 通用文字块 ---------- */
+
+.plank {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  text-align: justify;
+  text-align-last: justify;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+
+.plank .line {
+  display: block;
+  text-align: justify;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;  /* ← 允许一行内部正常换行 */
+  width: 100%;
+}
+
+.plank .line:last-child {
+  text-align: left;     /* 如果你希望最后一行左对齐 */
+}
+
+/* 只变更时长，不重写属性 */
+.plank.p1,
+.plank.p2,
+.plank.p3,
+.plank.p5,
+.plank.p6 {
+  transition-duration: 3s;
+}
+
+
+
+/* ---------- 各段落设置 ---------- */
+
+/* p1: two-end align */
+.plank.p1 {
+  top: 0px;
+  right:0px;
+  width: 370px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 18pt;
+  line-height: 18pt;
+  font-style: normal;
+  font-weight: 400;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+/* p2 */
+.plank.p2 {
+  top: 120px;
+  right:100px;
+  width: 370px;
+  transform: rotate(0deg);
+  font-family:'G2 Erika',serif;
+  font-size: 18pt;
+  line-height: 18pt;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+/* p3 */
+.plank.p3 {
+  top: 240px;
+  right: 200px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 18pt;
+  line-height: 18pt;
+  text-align: justify;
+  width: 370px;
+  text-align-last: justify;
+}
+
+.plank.p4 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(90deg) translateY(-100%);
+  transform-origin: top left;
+  font-family: 'cormorant garamond', serif;
+  font-size: 22pt;
+  line-height: 18pt;
+  font-weight:100;
+  font-style: italic;
+  width: 310px;
+  text-align: justify;
+}
+
+/* p5 */
+.plank.p5 {
+  top: 360px;
+  right: 300px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 18pt;
+  width: 370px;
+  line-height: 18pt;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+/* p6 */
+.plank.p6 {
+  top: 480px;
+  right: 420px;
+  width: 370px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 18pt;
+  line-height: 18pt;
+  text-align: justify;
+}
+
+/* p7 cat */
+.plank.p7 {
+  top: 600px;
+  left: 319px;
+  transform: rotate(0deg);
+  font-family: 'cormorant garamond', serif;
+  font-size: 18pt;
+  line-height: 20pt;
+  font-style: italic;
+  text-align: justify;
+}
+
+/* p8 */
+.plank.p8 {
+ top: 720px;
+  right: 420px;
+  width: 200px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 14pt;
+  text-align: justify;
+}
+
+/* p9: right align */
+.plank.p9 {
+  top: 800px;
+  transform: rotate(0deg);
+  font-family: 'cormorant garamond', serif;
+  font-size: 48pt;
+  line-height: 24pt;
+  font-weight: bold;
+  text-align: right;
+  width: 500px;
+}
+
+/* p10: left align */
+.plank.p10 {
+  top: 900px;
+  left: 0px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 14pt;
+  line-height: 12pt;
+  width: 110px;
+  font-style: italic;
+  text-align: left;
+}
+
+/* p11 ONly */
+.plank.p11 {
+  top: 1030px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika', serif;
+  font-size: 40pt;
+  line-height: 24pt;
+  text-align: justify;
+}
+
+/* p12 Time*/
+.plank.p12 {
+  top: 1080px;
+  transform: rotate(0deg);
+  font-family: 'G2 Erika', serif;
+  font-size: 40pt;
+  line-height: 24pt;
+  text-align: justify;
+}
+
+/* p13 Now */
+.plank.p13 {
+  position: absolute;
+  bottom: 150px;
+  right: 20px;
+  transform: rotate(90deg) translateX(100%);
+  transform-origin: bottom right;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 70pt;
+  line-height: 18pt;
+  font-weight: 100;
+  font-style: italic;
+  width: 310px;
+  text-align: justify;
+}
+
+/* p14 */
+.plank.p14 {
+  bottom: 150px;
+  right: -100px;
+  transform: rotate(90deg);
+  font-family: 'G2 Erika',serif;
+  font-size: 18pt;
+  width: 350px;
+  line-height: 18pt;
+  text-align: justify;
+}
+
+/* p15: right align */
+.plank.p15 {
+  bottom: 160px;
+  right: -40px;
+  transform: rotate(90deg);
+  font-family: 'Cormorant Garamond', serif;
+  width: 380px;
+  font-size: 48pt;
+  line-height: 48pt;
+  font-style: italic;
+  font-weight: bold;
+  text-align: right;
+}
+
+.plank.p9 .char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+body {
+  background: url('https://github.com/Lupinzi/JPG/blob/main/PHOTO-2025-05-15-18-20-45.jpg?raw=true') no-repeat center center fixed;
+  background-size: cover;
+
+  /* 保留你的布局设置 */
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
